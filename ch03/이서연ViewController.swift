@@ -7,38 +7,24 @@
 
 import UIKit
 
-class _______ViewController: UIViewController {
-
-    override func viewDidLoad() {
-        super.viewDidLoad()
-
-        // Do any additional setup after loading the view.
-    }
-    
-    @IBAction func fahrenheitEditingChange(_ sender: UITextField) {
-        
-    }
-    
-    @IBOutlet weak var celsiusLabel: UILabel!
-
-}
-
-class ConversionViewController: UIViewController {
+class 이서연ViewController: UIViewController {
     @IBOutlet weak var celsiusLabel: UILabel!
     @IBOutlet weak var fahrenheitTextField: UITextField!
-}
-
-extension ConversionViewController{
+    
+    let myDelegate=MyDelegate()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        fahrenheitTextField.delegate = self
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
         view.addGestureRecognizer(tapGesture)
+        
+        fahrenheitTextField.delegate = myDelegate
     }
-}
-
-extension ConversionViewController{
-    @IBAction func fahrenheitEditingChanged(_ sender: UITextField) {
+    
+    @objc func dismissKeyboard(sender: UITapGestureRecognizer){
+        fahrenheitTextField.resignFirstResponder()
+    }
+    @IBAction func fahrenheitEditingChange(_ sender: UITextField) {
         if let text = sender.text {
             if let fahrenheitValue = Double(text){
                 let celsiusValue = 5.0/9.0*(fahrenheitValue - 32.0)
@@ -50,21 +36,15 @@ extension ConversionViewController{
     }
 }
 
-extension ConversionViewController{
-    @objc func dismissKeyboard(sender: UITapGestureRecognizer){
-        fahrenheitTextField.resignFirstResponder()
-    }
-}
-
-extension ConversionViewController: UITextFieldDelegate{
+class MyDelegate: NSObject, UITextFieldDelegate{
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-        let existingTextHasDecimalSeparator = textField.text?.range(of: ".")
-        let replacementTextHasDecimalSeparator = string.range(of: ".")
-        if existingTextHasDecimalSeparator != nil && replacementTextHasDecimalSeparator != nil {
+        let existing = textField.text?.firstIndex(of: ".")
+        let comming = string.firstIndex(of: ".")
+        
+        if let _ = existing, let _ = comming{
             return false
-        }else{
-            return true
         }
+        return true
     }
 }
 
